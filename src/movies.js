@@ -62,12 +62,70 @@ const orderAlphabetically = movies => movies.map(movie => movie.title).sort().sl
 
 // BONUS - Iteration 7: Time Format - Turn duration of the movies from hours to minutes
 const turnHoursToMinutes = movies => {
- const splitted =  movies.map(movie => movie.duration.split(''))
 
-  console.log(splitted)
+  const moviesArr = []
 
+  movies.map(movie => {
+    if(movie.duration.includes("h") && movie.duration.includes("min")){
+      const [hours, minutes] = movie.duration.split(" ")
+      const [hoursVal, hourUnit] = hours.split("h")
+      const [minuteVal, minuteUnit] = minutes.split("min")
+
+      movie.duration = parseInt(hoursVal) * 60 + parseInt(minuteVal)
+
+      moviesArr.push(movie)
+
+    } else if(movie.duration.includes("h") && !movie.duration.includes("min")){
+      const [hoursVal, hourUnit] = movie.duration.split(" ")
+
+      movie.duration = parseInt(hoursVal) * 60
+
+      moviesArr.push(movie)
+
+    } else if(!movie.duration.includes("h") && movie.duration.includes("min")){
+      const [minVal, minUnit] = movie.duration.split(" ")
+
+      movie.duration = parseInt(minVal)
+
+      moviesArr.push(movie)
+    }
+  })
+
+  return moviesArr
 
 }
 
 // BONUS - Iteration 8: Best yearly score average - Best yearly score average
-function bestYearAvg(moviesArray) {}
+const bestYearAvg = movies => {
+
+  if(!movies.length) return null
+
+  let scoresByYear = {}
+
+  movies.forEach(movie => {
+    if(!scoresByYear[movie.year]){
+      scoresByYear[movie.year] = {
+        totalScore : 0,
+        count: 0
+      }
+    }
+    scoresByYear[movie.year].totalScore += movie.rate;
+    scoresByYear[movie.year].count += 1;
+  })
+
+  let bestAvg = 0;
+  let bestYear = null;
+
+  for(let year in scoresByYear){
+    let avg = scoresByYear[year].totalScore / scoresByYear[year].count
+    if(avg > bestAvg){
+      bestAvg = avg;
+      bestYear = year;
+    }
+  }
+
+  console.log(bestYear, bestAvg)
+
+  return `The best year was ${bestYear} with an average score of ${bestAvg}`
+
+}
